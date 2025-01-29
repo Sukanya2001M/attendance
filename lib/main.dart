@@ -1,101 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:table_calendar/table_calendar.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'home.dart';
+import 'login.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart'; // Ensure this file is generated in your project
 
-void main() {
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Initialize Firebase using the configuration
+  await Firebase.initializeApp(
+    options: FirebaseOptions( apiKey: 'AIzaSyAzyKHyB5I9ivKH0lNQAAljcCCySj__LfE',
+      appId: '1:547810480733:android:083ff1a1254dc9dfdd73b4',
+      messagingSenderId: '547810480733',
+      projectId: 'keys-edeaa',
+      storageBucket: 'keys-edeaa.firebasestorage.app',),
+  );
+
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: CalendarCheckboxApp(),
+      home: login_page(),
     );
   }
 }
 
-class CalendarCheckboxApp extends StatefulWidget {
-  @override
-  _CalendarCheckboxAppState createState() => _CalendarCheckboxAppState();
-}
-
-class _CalendarCheckboxAppState extends State<CalendarCheckboxApp> {
-  DateTime _selectedDate = DateTime.now();
-  bool _isKeySelected = false;
-  bool _isAttendanceSelected = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Attendance'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // Calendar Widget
-            TableCalendar(
-              focusedDay: _selectedDate,
-              firstDay: DateTime.utc(2000, 1, 1),
-              lastDay: DateTime.utc(2100, 12, 31),
-              selectedDayPredicate: (day) => isSameDay(day, _selectedDate),
-              onDaySelected: (selectedDay, focusedDay) {
-                setState(() {
-                  _selectedDate = selectedDay;
-                });
-              },
-              calendarStyle: CalendarStyle(
-                todayDecoration: BoxDecoration(
-                  color: Colors.blue,
-                  shape: BoxShape.circle,
-                ),
-                selectedDecoration: BoxDecoration(
-                  color: Colors.green,
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            // Checkboxes
-            Row(
-              children: [
-                Checkbox(
-                  value: _isKeySelected,
-                  onChanged: (value) {
-                    setState(() {
-                      _isKeySelected = value!;
-                    });
-                  },
-                ),
-                Text('Key'),
-                SizedBox(width: 20),
-                Checkbox(
-                  value: _isAttendanceSelected,
-                  onChanged: (value) {
-                    setState(() {
-                      _isAttendanceSelected = value!;
-                    });
-                  },
-                ),
-                Text('Attendance'),
-              ],
-            ),
-            Spacer(),
-            // Confirm Button
-            ElevatedButton(
-              onPressed: () {
-                // Handle the button press
-                print('Selected Date: $_selectedDate');
-                print('Key Selected: $_isKeySelected');
-                print('Attendance Selected: $_isAttendanceSelected');
-              },
-              child: Text('Confirm'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
